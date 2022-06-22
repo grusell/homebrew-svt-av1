@@ -1,0 +1,17 @@
+name: macos-brew-install
+on: push
+jobs:
+  macos-brew-install:
+    name: Test install brew formula
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+      - name: install brew formula
+        run: |
+          brew update
+          brew tap grusell/svt-av1
+          cp Formula/svt-av1.rb $(brew --prefix)/Homebrew/Library/Taps/grusell/homebrew-svt-av1/Formula
+          echo "Local formula:"
+          cat $(brew --prefix)/Homebrew/Library/Taps/grusell/homebrew-vivictpp/Formula/svt-av1.rb
+          brew install svt-av1
