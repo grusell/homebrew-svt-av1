@@ -5,6 +5,7 @@ class SvtAv1 < Formula
   sha256 "1c211b944ac83ef013fe91aee96c01289da4e3762c1e2f265449f3a964f8e4bc"
   license "BSD-3-Clause"
   head "https://gitlab.com/AOMediaCodec/SVT-AV1.git", branch: "master"
+  deprecate! date: "2022-08-05", because: "is now available in homebrew-core repo"
 
   depends_on "cmake" => :build
   depends_on "make" => :build
@@ -16,10 +17,12 @@ class SvtAv1 < Formula
   end
 
   def install
-    Dir.chdir("Build")
-    system "cmake", "..", "-G", "Unix Makefiles", "-DCMAKE_BUILD_TYPE=Release", "-DCMAKE_INSTALL_PREFIX=#{prefix}"
-    system "make"
-    system "make", "install"
+    args = std_cmake_args + %W[
+      -DCMAKE_INSTALL_RPATH=#{rpath}
+    ]
+    system "cmake", "-S", ".", "-B", "build", *args
+    system "cmake", "--build", "build"
+    system "cmake", "--install", "build"
   end
 
   test do
